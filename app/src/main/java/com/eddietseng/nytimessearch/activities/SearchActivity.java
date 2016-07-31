@@ -3,6 +3,7 @@ package com.eddietseng.nytimessearch.activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 
 import com.eddietseng.nytimessearch.R;
 import com.eddietseng.nytimessearch.adapter.ArticleArrayAdapter;
+import com.eddietseng.nytimessearch.fragment.ArticleFilterFragment;
 import com.eddietseng.nytimessearch.helper.ItemClickSupport;
 import com.eddietseng.nytimessearch.model.Article;
 import com.loopj.android.http.AsyncHttpClient;
@@ -28,14 +30,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity
+        implements ArticleFilterFragment.ArticleFilterDialogListener{
     RecyclerView rvResults;
 
     ArrayList<Article> articles;
     ArticleArrayAdapter adapter;
+
+    HashMap<String,String> filterParams;
 
 //1a7b80d61a344a0aacb114e1f4b4ac02
     @Override
@@ -81,6 +88,8 @@ public class SearchActivity extends AppCompatActivity {
         // Customize searchView text and hint colors
         int searchEditId = android.support.v7.appcompat.R.id.search_src_text;
         EditText et = (EditText) searchView.findViewById(searchEditId);
+        et.setLines(1);
+        et.setSingleLine(true);
         et.setTextColor(Color.GREEN);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -94,6 +103,12 @@ public class SearchActivity extends AppCompatActivity {
                 params.put("api-key", "1a7b80d61a344a0aacb114e1f4b4ac02");
                 params.put("page", 0);
                 params.put("q", query);
+
+                if(filterParams != null) {
+                    for(Map.Entry<String,String> s : filterParams.entrySet()) {
+                        params.put(s.getKey(),s.getValue());
+                    }
+                }
 
                 client.get(url, params, new JsonHttpResponseHandler(){
                     @Override
@@ -141,10 +156,26 @@ public class SearchActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            showEditDialog();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void showEditDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        ArticleFilterFragment editNameDialogFragment = ArticleFilterFragment.newInstance("Search Filter");
+        editNameDialogFragment.show(fm, "fragment_article_filter");
+    }
+
+
+    @Override
+    public void onFinishEditDialog(HashMap<String,String> params) {
+//        for(Map.Entry s : params.entrySet()) {
+//            Log.i("SearchActivity", "filter string: " + s.getKey() + " / " +s.getValue() );
+//        }
+
+        filterParams = params;
+    }
 }
