@@ -15,6 +15,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by eddietseng on 7/27/16.
  */
@@ -121,22 +124,21 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     static class ArticleRegularHolder extends RecyclerView.ViewHolder {
-        DynamicHeightImageView ivImage;
-        TextView tvTitle;
+        @BindView(R.id.ivImage) DynamicHeightImageView ivImage;
+        @BindView(R.id.tvTitle) TextView tvTitle;
 
         public ArticleRegularHolder(View itemView) {
             super(itemView);
-            this.ivImage = (DynamicHeightImageView) itemView.findViewById(R.id.ivImage);
-            this.tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+            ButterKnife.bind(this, itemView);
         }
     }
 
     static class ArticleTextHolder extends RecyclerView.ViewHolder {
-        TextView tvTextTitle;
+        @BindView(R.id.tvTextTitle) TextView tvTextTitle;
 
         public ArticleTextHolder(View itemView) {
             super(itemView);
-            this.tvTextTitle = (TextView) itemView.findViewById(R.id.tvTextTitle);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

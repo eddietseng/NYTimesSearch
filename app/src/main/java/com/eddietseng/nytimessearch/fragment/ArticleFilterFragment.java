@@ -20,6 +20,10 @@ import com.eddietseng.nytimessearch.R;
 
 import java.util.HashMap;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by eddietseng on 7/30/16.
  */
@@ -27,10 +31,11 @@ public class ArticleFilterFragment extends DialogFragment
         implements SelectDateFragment.SelectDateDialogListener,
         View.OnClickListener {
 
-    private EditText etDate;
-    private Spinner spSortOrder;
-    private RadioGroup ndGroup;
-    private Button btnSave;
+    @BindView(R.id.etBeginDate) EditText etDate;
+    @BindView(R.id.spSortOrder) Spinner spSortOrder;
+    @BindView(R.id.radio_ND_group) RadioGroup ndGroup;
+    @BindView(R.id.btnSave) Button btnSave;
+    private Unbinder unbinder;
 
     public interface ArticleFilterDialogListener {
         void onFinishEditDialog(HashMap<String,String> params);
@@ -53,17 +58,19 @@ public class ArticleFilterFragment extends DialogFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_article_filter, container);
+        View view = inflater.inflate(R.layout.fragment_article_filter, container);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Get field from view
-        etDate = (EditText) view.findViewById(R.id.etBeginDate);
-        spSortOrder = (Spinner) view.findViewById(R.id.spSortOrder);
-        ndGroup = (RadioGroup) view.findViewById(R.id.radio_ND_group);
-        btnSave = (Button) view.findViewById(R.id.btnSave);
+//        etDate = (EditText) view.findViewById(R.id.etBeginDate);
+//        spSortOrder = (Spinner) view.findViewById(R.id.spSortOrder);
+//        ndGroup = (RadioGroup) view.findViewById(R.id.radio_ND_group);
+//        btnSave = (Button) view.findViewById(R.id.btnSave);
 
         etDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +87,13 @@ public class ArticleFilterFragment extends DialogFragment
         etDate.requestFocus();
         getDialog().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
+    // When binding a fragment in onCreateView, set the views to null in onDestroyView.
+    // ButterKnife returns an Unbinder on the initial binding that has an unbind method to do this automatically.
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
