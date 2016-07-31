@@ -6,10 +6,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.eddietseng.nytimessearch.R;
+import com.eddietseng.nytimessearch.helper.DynamicHeightImageView;
 import com.eddietseng.nytimessearch.model.Article;
 import com.squareup.picasso.Picasso;
 
@@ -19,6 +19,7 @@ import java.util.List;
  * Created by eddietseng on 7/27/16.
  */
 public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final int IMAGE_TEXT = 0, TEXT = 1;
 
     private Context context;
     private List<Article> articles;
@@ -30,23 +31,60 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.item_article_result, parent, false );
 
-        ArticleHolder viewHolder = new ArticleHolder(view);
+        switch (viewType) {
+            case IMAGE_TEXT:
+                View view1 = inflater.inflate(R.layout.item_article_result, parent, false );
+                viewHolder = new ArticleRegularHolder(view1);
+                break;
+
+            case TEXT:
+                View view2 = inflater.inflate(R.layout.item_article_text, parent, false );
+                viewHolder = new ArticleTextHolder(view2);
+                break;
+
+            default:
+                View view3 = inflater.inflate(R.layout.item_article_text, parent, false );
+                viewHolder = new ArticleTextHolder(view3);
+                break;
+        }
 
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ArticleHolder aHolder = (ArticleHolder)holder;
-        configureArticleHolder(aHolder,position);
+        switch (holder.getItemViewType()) {
+            case IMAGE_TEXT:
+                ArticleRegularHolder viewHolder = (ArticleRegularHolder)holder;
+                configureRegularArticleHolder(viewHolder,position);
+                break;
+
+            case TEXT:
+                ArticleTextHolder textHolder = (ArticleTextHolder)holder;
+                configureTextArticleHolder(textHolder,position);
+                break;
+
+            default:
+                ArticleTextHolder defaultHolder = (ArticleTextHolder)holder;
+                configureTextArticleHolder(defaultHolder,position);
+                break;
+        }
     }
 
     @Override
     public int getItemCount() {
         return articles.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(articles.get(position).getThumbNail().length() <= 0)
+            return TEXT;
+        else
+            return IMAGE_TEXT;
     }
 
     // Clean all elements of the recycler
@@ -55,7 +93,7 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
-    private void configureArticleHolder(ArticleHolder holder, int position) {
+    private void configureRegularArticleHolder(ArticleRegularHolder holder, int position) {
         Article article = articles.get(position);
 
         // clear out recycled image
@@ -69,19 +107,36 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         String thumbnail = article.getThumbNail();
 
         if (!TextUtils.isEmpty(thumbnail)) {
+            // `holder.ivImage` should be of type `DynamicHeightImageView`
+            // Set the height ratio before loading in image into Picasso
+            holder.ivImage.setHeightRatio((double)article.getThumbNailHeight()/article.getThumbNailWidth());
             Picasso.with(context).load(thumbnail).placeholder(R.drawable.nytimes).into(holder.ivImage);
         } else
             Picasso.with(context).load(R.drawable.nytimes).into(holder.ivImage);
     }
 
-    static class ArticleHolder extends RecyclerView.ViewHolder {
-        ImageView ivImage;
+    private void configureTextArticleHolder(ArticleTextHolder holder, int position) {
+        Article article = articles.get(position);
+        holder.tvTextTitle.setText(article.getHeadline());
+    }
+
+    static class ArticleRegularHolder extends RecyclerView.ViewHolder {
+        DynamicHeightImageView ivImage;
         TextView tvTitle;
 
-        public ArticleHolder(View itemView) {
+        public ArticleRegularHolder(View itemView) {
             super(itemView);
-            this.ivImage = (ImageView) itemView.findViewById(R.id.ivImage);
+            this.ivImage = (DynamicHeightImageView) itemView.findViewById(R.id.ivImage);
             this.tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+        }
+    }
+
+    static class ArticleTextHolder extends RecyclerView.ViewHolder {
+        TextView tvTextTitle;
+
+        public ArticleTextHolder(View itemView) {
+            super(itemView);
+            this.tvTextTitle = (TextView) itemView.findViewById(R.id.tvTextTitle);
         }
     }
 }

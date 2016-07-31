@@ -14,6 +14,8 @@ public class Article implements Serializable{
     String webUrl;
     String headline;
     String thumbNail;
+    int thumbNailWidth;
+    int thumbNailHeight;
 
     public Article(JSONObject jsonObject) {
         try {
@@ -25,6 +27,8 @@ public class Article implements Serializable{
             if( multimedia.length() > 0) {
                 JSONObject multimediaJson = multimedia.getJSONObject(0);
                 this.thumbNail = "http://www.nytimes.com/" + multimediaJson.getString("url");
+                this.thumbNailWidth = Integer.parseInt(multimediaJson.getString("width"));
+                this.thumbNailHeight = Integer.parseInt(multimediaJson.getString("height"));
             } else
                 this.thumbNail = "";
         } catch (JSONException e) {
@@ -56,5 +60,13 @@ public class Article implements Serializable{
 
     public String getThumbNail() {
         return thumbNail;
+    }
+
+    public int getThumbNailWidth() {
+        return thumbNailWidth;
+    }
+
+    public int getThumbNailHeight() {
+        return thumbNailHeight;
     }
 }
