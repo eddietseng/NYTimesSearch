@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.parceler.Parcel;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by eddietseng on 7/27/16.
@@ -40,7 +41,7 @@ public class Article {
             JSONArray multimedia = jsonObject.getJSONArray("multimedia");
 
             if( multimedia.length() > 0) {
-                JSONObject multimediaJson = multimedia.getJSONObject(0);
+                JSONObject multimediaJson = multimedia.getJSONObject(new Random().nextInt(multimedia.length()));
                 this.thumbNail = "http://www.nytimes.com/" + multimediaJson.getString("url");
                 this.thumbNailWidth = Integer.parseInt(multimediaJson.getString("width"));
                 this.thumbNailHeight = Integer.parseInt(multimediaJson.getString("height"));
