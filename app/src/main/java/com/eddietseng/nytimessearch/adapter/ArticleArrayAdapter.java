@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.eddietseng.nytimessearch.R;
 import com.eddietseng.nytimessearch.helper.DynamicHeightImageView;
 import com.eddietseng.nytimessearch.model.Article;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -105,17 +105,17 @@ public class ArticleArrayAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         holder.tvTitle.setText(article.getHeadline());
 
         // populate the thumbnail image
-        // remote fetching the image in the background using Picasso
+        // remote fetching the image in the background using Picasso/Glide
 
         String thumbnail = article.getThumbNail();
 
         if (!TextUtils.isEmpty(thumbnail)) {
             // `holder.ivImage` should be of type `DynamicHeightImageView`
-            // Set the height ratio before loading in image into Picasso
+            // Set the height ratio before loading in image into Picasso/Glide
             holder.ivImage.setHeightRatio((double)article.getThumbNailHeight()/article.getThumbNailWidth());
-            Picasso.with(context).load(thumbnail).placeholder(R.drawable.nytimes).into(holder.ivImage);
+            Glide.with(context).load(thumbnail).placeholder(R.drawable.nytimes).into(holder.ivImage);
         } else
-            Picasso.with(context).load(R.drawable.nytimes).into(holder.ivImage);
+            Glide.with(context).load(R.drawable.nytimes).into(holder.ivImage);
     }
 
     private void configureTextArticleHolder(ArticleTextHolder holder, int position) {

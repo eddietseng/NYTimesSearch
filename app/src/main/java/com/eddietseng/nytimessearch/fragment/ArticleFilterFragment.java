@@ -72,12 +72,7 @@ public class ArticleFilterFragment extends DialogFragment
 //        ndGroup = (RadioGroup) view.findViewById(R.id.radio_ND_group);
 //        btnSave = (Button) view.findViewById(R.id.btnSave);
 
-        etDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showEditDialog();
-            }
-        });
+        etDate.setOnClickListener(v -> showEditDialog());
         btnSave.setOnClickListener(this);
 
         // Fetch arguments from bundle and set title

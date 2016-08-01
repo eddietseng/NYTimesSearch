@@ -8,6 +8,8 @@ import android.webkit.WebViewClient;
 import com.eddietseng.nytimessearch.R;
 import com.eddietseng.nytimessearch.model.Article;
 
+import org.parceler.Parcels;
+
 public class ArticleActivity extends AppCompatActivity {
 
     @Override
@@ -17,7 +19,7 @@ public class ArticleActivity extends AppCompatActivity {
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
-        Article article = (Article)getIntent().getSerializableExtra("article");
+        Article article = Parcels.unwrap(getIntent().getParcelableExtra("article"));
 
         WebView webView = (WebView) findViewById(R.id.wvArticle);
 

@@ -3,19 +3,34 @@ package com.eddietseng.nytimessearch.model;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * Created by eddietseng on 7/27/16.
  */
-public class Article implements Serializable{
+@Parcel
+public class Article {
+    // fields must be public
     String webUrl;
     String headline;
     String thumbNail;
     int thumbNailWidth;
     int thumbNailHeight;
+
+    // empty constructor needed by the Parceler library
+    public Article() {
+
+    }
+
+    public Article(String webUrl, String headline, String thumbNail, int thumbNailWidth, int thumbNailHeight) {
+        this.webUrl = webUrl;
+        this.headline = headline;
+        this.thumbNail = thumbNail;
+        this.thumbNailWidth = thumbNailWidth;
+        this.thumbNailHeight = thumbNailHeight;
+    }
 
     public Article(JSONObject jsonObject) {
         try {

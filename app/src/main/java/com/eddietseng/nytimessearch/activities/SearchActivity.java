@@ -16,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -34,6 +33,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,23 +74,20 @@ public class SearchActivity extends AppCompatActivity
         rvResults.addItemDecoration(decoration);
 
         ItemClickSupport.addTo(rvResults).setOnItemClickListener(
-                new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        if(!isNetworkAvailable()) {
-                            Toast.makeText(getApplicationContext(),"Please Check Network...",Toast.LENGTH_LONG).show();
-                            return;
-                        }
-
-                        // create an intent to display the article
-                        Intent intent = new Intent(getApplicationContext(), ArticleActivity.class);
-                        // get the article to display
-                        Article article = articles.get(position);
-                        // pass in the article into intent
-                        intent.putExtra("article", article);
-                        //launch the activity
-                        startActivity(intent);
+                (recyclerView, position, v) -> {
+                    if(!isNetworkAvailable()) {
+                        Toast.makeText(getApplicationContext(),"Please Check Network...",Toast.LENGTH_LONG).show();
+                        return;
                     }
+
+                    // create an intent to display the article
+                    Intent intent = new Intent(getApplicationContext(), ArticleActivity.class);
+                    // get the article to display
+                    Article article = articles.get(position);
+                    // pass in the article into intent
+                    intent.putExtra("article", Parcels.wrap(article));
+                    //launch the activity
+                    startActivity(intent);
                 }
         );
 
